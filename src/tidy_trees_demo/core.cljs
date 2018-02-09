@@ -5,11 +5,12 @@
               [tidy-trees.reagent :refer [tidy-tree]]
 
               [cljsjs.codemirror]
-              [cljsjs.codemirror.mode.clojure]))
+              [cljsjs.codemirror.mode.clojure]
+              [cljsjs.codemirror.addon.edit.matchbrackets]))
 
 (enable-console-print!)
 
-(def callout "[make your [e own trees !!!]]")
+(def callout "[parent \n [child-1 c1.x c1.y [c1.nums 1 \n                             2 \n                             3]]\n [child-2 c2.x c2.y [c2.nums 4 \n                             5 \n                             6]]]")
 
 (reg-event-db
   ::read-source
@@ -35,12 +36,14 @@
                                   {"value" callout
                                    "mode"  "clojure"
                                    "theme" "panda-syntax"
-                                   "lineNumbers" true}))]
+                                   "lineNumbers" true
+                                   "matchBrackets" true}))]
          (.on mir
               "change"
               (fn [_] (dispatch [::save-source (.getValue mir)])))))
      :reagent-render
-     (fn [] [:textarea {:default-value callout}])}))
+     (fn [] [:textarea {:default-value callout
+                        :rows 2}])}))
 
 (defn hiccup-editor
   []
@@ -58,15 +61,16 @@
     (fn []
       [:div.ide
        [hiccup-editor]
-       [tidy-tree @tree
-        {:branch?  vector?
-         :children rest
+       (when-let [tree @tree]
+         [tidy-tree tree
+          {:branch?  vector?
+           :children rest
 
-         :label-branch (comp str first)
-         :label-term   str
+           :label-branch (comp str first)
+           :label-term   str
 
-         :v-gap    10
-         :h-gap    20}]])))
+           :v-gap    10
+           :h-gap    20}])])))
 
 (reagent/render-component [tree-ide]
                           (. js/document (getElementById "app")))

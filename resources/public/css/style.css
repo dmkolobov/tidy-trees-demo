@@ -4,6 +4,15 @@ body {
     font-family: 'Inconsolata', monospace;
 }
 
+#site {
+    margin: 0 auto 0 50px;
+    width: 50%;
+}
+
+.CodeMirror {
+    height: auto;
+}
+
 .tidy-tree-edge {
     stroke: #000;
     stroke-width: 1px;
