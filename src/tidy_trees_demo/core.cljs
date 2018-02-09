@@ -20,7 +20,7 @@
 
 (enable-console-print!)
 
-(def callout "[parent \n [child-1 c1.x c1.y [c1.nums 1 \n                             2 \n                             3]]\n [child-2 c2.x c2.y [c2.nums 4 \n                             5 \n                             6]]]")
+(def callout "[parent \n [\"child\\none\" c1.x c1.y [c1.nums 1 \n                             2 \n                             3]]\n [child-2 c2.x c2.y [c2.nums 4 \n                             5 \n                             6]]]")
 
 (reg-event-db
   ::read-source
@@ -37,7 +37,6 @@
 (reg-sub
   ::tree
   (fn [db] (get db ::tree "...")))
-
 
 (reg-sub
   ::disable-draw?
@@ -72,7 +71,7 @@
           :disabled? @disable?])))
 
 (defn hiccup-tree
-  [tree h-gap v-gap]
+  [tree {:keys [h-gap v-gap edge-style]}]
   [tidy-tree tree
    {:branch?      vector?
     :children     rest
@@ -80,17 +79,26 @@
     :label-term   str
     :v-gap        v-gap
     :h-gap        h-gap
-    :edges        :straight}])
+    :edge-style        edge-style}])
+
+(def def-opt {:v-gap 10 :h-gap 10 :edge-style :straight})
 
 (reg-sub
   ::opt
   (fn [db [_ id]]
-    (get-in db [::opt id] 10)))
+    (get-in db [::opt id] (get def-opt id))))
 
 (reg-event-db
   ::set-opt
   (fn [db [_ id val]]
-    (assoc-in db [::opt id] val)))
+    (update db
+            ::opt
+            (fn [opts]
+              (assoc (merge def-opt opts) id val)))))
+
+(reg-sub
+  ::opts
+  (fn [db [_]] (get db ::opt def-opt)))
 
 (defn tree-editor
   []
@@ -101,11 +109,10 @@
 (defn ide
   []
   (let [tree  (subscribe [::tree])
-        h-gap (subscribe [::opt :h-gap])
-        v-gap (subscribe [::opt :v-gap])]
+        opts  (subscribe [::opts])]
     (fn []
       [v-box :align    :center
-             :children [(when-let [tree @tree] [box :child [hiccup-tree tree @h-gap @v-gap]])
+             :children [(when-let [tree @tree] [box :child [hiccup-tree tree @opts]])
                         [box :width "100%" :child [tree-editor]]]])))
 
 (defn opt-slider
@@ -116,6 +123,19 @@
               :step      10
               :on-change #(dispatch [::set-opt id %])])))
 
+(defn edge-control
+  []
+  (let [model (subscribe [::opt :edge-style])]
+    (fn []
+      [v-box :children [[radio-button :label ":straight"
+                                      :value :straight
+                                      :model @model
+                                      :on-change #(dispatch [::set-opt :edge-style :straight])]
+                        [radio-button :label ":diagonal"
+                                      :value :diagonal
+                                      :model @model
+                                      :on-change #(dispatch [::set-opt :edge-style :diagonal])]]])))
+
 (defn tree-ide
   []
   (dispatch [::save-source callout])
@@ -124,6 +144,7 @@
 
 (reagent/render-component [opt-slider :v-gap] (. js/document (getElementById "v-gap")))
 (reagent/render-component [opt-slider :h-gap] (. js/document (getElementById "h-gap")))
+(reagent/render-component [edge-control] (. js/document (getElementById "edge-style")))
 
 (reagent/render-component [tree-ide] (. js/document (getElementById "app")))
 

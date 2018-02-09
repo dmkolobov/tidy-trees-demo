@@ -25,15 +25,13 @@
       <h1>tidy-trees</h1>
       <p>A library for making tidy drawings of trees.</p>
 
-      <h2>example</h2>
-
-      <p>
-
-      </p>
-
       <h2>usage</h2>
 
-      <p>Provides a reagent component for drawing trees. Layout occurs in <code>O(height * nodes)</code> time.</p>
+      <p>Provides a reagent component for drawing arbitrary trees. The tree is traversed using the provided
+        <code>children</code> and <code>branch?</code> functions(<i>a la</i> zippers), and the nodes are spaced
+        so that they do not overlap.
+
+        The layout algorithm takes <code>O(height-of-tree * nodes)</code> time.</p>
 
       <pre id="usage" class="cm-s-panda-syntax">
 (ns example
@@ -72,16 +70,23 @@
 
         <dt class="col-sm-3"><code>:v-gap</code></dt>
         <dd class="col-sm-9">
-          <b>number</b>
-          <p>The minimum amount of space between levels, in pixels.</p>
+          <b>number(px)</b>
+          <p>The minimum amount of space between levels.</p>
           <div id="v-gap"></div>
         </dd>
 
         <dt class="col-sm-3"><code>:h-gap</code></dt>
         <dd class="col-sm-9">
-          <b>number</b>
-          <p>The amount of space between adjacent nodes on the same level, in pixels.</p>
+          <b>number(px)</b>
+          <p>The amount of space between adjacent nodes on the same level.</p>
           <div id="h-gap"></div>
+        </dd>
+
+        <dt class="col-sm-3"><code>:edges</code></dt>
+        <dd class="col-sm-9">
+          <b>keyword</b>
+          <p>Determines the way tree edges are draw.</p>
+          <div id="edge-style"></div>
         </dd>
       </dl>
 
