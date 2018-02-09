@@ -4,9 +4,16 @@ body, .CodeMirror, .tidy-tree {
     font-family: 'Inconsolata', monospace;
 }
 
+#site {
+    width: 50rem;
+    margin: 0 auto;
+    overflow: visible;
+}
+
 .CodeMirror {
     height: auto;
-    min-width: 400px;
+    min-width: 10em;
+    width: 100%;
 }
 
 .tidy-tree-edge {

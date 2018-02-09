@@ -6,6 +6,8 @@
 
               [re-com.core :refer [button
                                    slider
+                                   label
+                                   box
                                    h-box
                                    v-box
                                    radio-button]]
@@ -55,35 +57,60 @@
           :on-click #(dispatch [::read-source])])
 
 (defn hiccup-tree
-  [tree]
+  [tree h-gap v-gap]
   [tidy-tree tree
    {:branch?      vector?
     :children     rest
     :label-branch (comp str first)
     :label-term   str
-    :v-gap        10
-    :h-gap        20}])
+    :v-gap        v-gap
+    :h-gap        h-gap}])
+
+(reg-sub
+  ::opt
+  (fn [db [_ id]]
+    (get-in db [::opt id] 10)))
+
+(reg-event-db
+  ::set-opt
+  (fn [db [_ id val]]
+    (assoc-in db [::opt id] val)))
+
+(defn tree-controls
+  []
+  (let [h-gap (subscribe [::opt :h-gap])
+        v-gap (subscribe [::opt :v-gap])]
+    (fn []
+      [v-box :width    "100%"
+             :size     "auto"
+             :children [[label :label [:code ":h-gap"]]
+                        [slider :model     @h-gap
+                                :step      10
+                                :on-change #(dispatch [::set-opt :h-gap %])]
+                        [label :label [:code ":v-gap"]]
+                        [slider :model     @v-gap
+                                :step      10
+                                :on-change #(dispatch [::set-opt :v-gap %])]
+                        [draw-button]]])))
 
 (defn tree-editor
-  [tree]
-  [h-box :align    :start
-         :gap      "1em"
-         :children [[code-mirror]
-                    (when tree [hiccup-tree tree])]])
+  []
+  (let [tree  (subscribe [::tree])
+        h-gap (subscribe [::opt :h-gap])
+        v-gap (subscribe [::opt :v-gap])]
+    (fn []
+      [v-box :align    :center
+             :children [[h-box :children [[box :child [code-mirror]]
+                                          [tree-controls]]]
+                        (when-let [tree @tree] [box :child [hiccup-tree tree @h-gap @v-gap]])]])))
 
 
 
 (defn tree-ide
   []
-  (let [tree (subscribe [::tree])]
-
-    (dispatch [::save-source callout])
-    (dispatch [::read-source])
-
-    (fn []
-      [:div.ide.tree-example
-       [v-box :children [[draw-button]
-                         [tree-editor @tree]]]])))
+  (dispatch [::save-source callout])
+  (dispatch [::read-source])
+  (fn [] [tree-editor]))
 
 (reagent/render-component [tree-ide]
                           (. js/document (getElementById "app")))
