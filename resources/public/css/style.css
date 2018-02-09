@@ -1,5 +1,9 @@
 /* some style */
 
+body {
+    font-family: 'Inconsolata', monospace;
+}
+
 .tidy-tree-edge {
     stroke: #000;
     stroke-width: 1px;
