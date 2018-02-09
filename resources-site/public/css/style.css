@@ -1,0 +1,52 @@
+/* some style */
+
+body, .CodeMirror, .tidy-tree {
+    font-family: 'Inconsolata', monospace;
+}
+
+#site {
+    width: 50rem;
+    margin: 0 auto;
+    overflow: visible;
+}
+
+.CodeMirror {
+    position: absolute;
+    height: auto;
+    min-width: 10em;
+    width: 100%;
+}
+
+.tidy-tree-node {
+    border: 1px solid #000;
+}
+
+.tidy-tree-edge {
+    stroke: #000;
+    stroke-width: 1px;
+}
+
+.tidy-tree-node {
+    padding: 5px;
+}
+
+.tidy-tree {
+    font-size: 1.2em;
+    font-weight: 500;
+}
+
+.params dt {
+    text-align: right;
+}
+
+.tree-editor {
+    position: relative;
+}
+
+.draw-button {
+    z-index: 1000;
+    top: 0;
+    right: 0;
+    margin: 1em;
+    position: absolute;
+}
