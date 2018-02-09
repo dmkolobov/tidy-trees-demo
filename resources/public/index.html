@@ -4,14 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.5/css/bootstrap.css">
-    <link rel="stylesheet" href="css/material-design-iconic-font.min.css">
-    <link rel="stylesheet" href="css/re-com.css">
 
     <link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.14.0/codemirror.min.css" rel="stylesheet" type="text/css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.34.0/theme/panda-syntax.min.css" rel="stylesheet" type="text/css">
 
     <link href="https://fonts.googleapis.com/css?family=Inconsolata" rel="stylesheet">
+
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.5/css/bootstrap.css">
+    <link rel="stylesheet" href="css/material-design-iconic-font.min.css">
+    <link rel="stylesheet" href="css/re-com.css">
+
     <link href="css/style.css" rel="stylesheet" type="text/css">
 
     <link rel="icon" href="https://clojurescript.org/images/cljs-logo-icon-32.png">
@@ -23,12 +25,26 @@
       <h1>tidy-trees</h1>
       <p>A library for making tidy drawings of trees.</p>
 
+      <h2>example</h2>
+
+      <p>
+
+      </p>
+
       <h2>usage</h2>
 
-      <p>This library provides a component that performs layout on the given tree in <code>O(depth * nodes)</code>
-      time.</p>
+      <p>Provides a reagent component for drawing trees. Layout occurs in <code>O(height * nodes)</code> time.</p>
 
-      <h4><code>[tidy-trees.reagent/tidy-tree tree opts]</code></h4>
+      <pre id="usage" class="cm-s-panda-syntax">
+(ns example
+  (:require [tidy-trees.reagent :refer [tidy-tree]))
+
+  ...
+
+  [tidy-tree tree opts]</pre>
+
+      <p>where <code>opts</code> contains the following entries:</p>
+
       <dl class="params row">
         <dt class="col-sm-3"><code>:branch?</code></dt>
         <dd class="col-sm-9">

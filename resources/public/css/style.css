@@ -11,9 +11,14 @@ body, .CodeMirror, .tidy-tree {
 }
 
 .CodeMirror {
+    position: absolute;
     height: auto;
     min-width: 10em;
     width: 100%;
+}
+
+.tidy-tree-node {
+    border: 1px solid #000;
 }
 
 .tidy-tree-edge {
@@ -32,4 +37,16 @@ body, .CodeMirror, .tidy-tree {
 
 .params dt {
     text-align: right;
+}
+
+.tree-editor {
+    position: relative;
+}
+
+.draw-button {
+    z-index: 1000;
+    top: 0;
+    right: 0;
+    margin: 1em;
+    position: absolute;
 }

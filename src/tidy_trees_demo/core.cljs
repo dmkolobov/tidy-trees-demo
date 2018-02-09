@@ -14,7 +14,9 @@
 
               [cljsjs.codemirror]
               [cljsjs.codemirror.mode.clojure]
-              [cljsjs.codemirror.addon.edit.matchbrackets]))
+              [cljsjs.codemirror.addon.edit.matchbrackets]
+              [cljsjs.codemirror.addon.runmode.runmode]
+              [cljsjs.codemirror.addon.runmode.colorize]))
 
 (enable-console-print!)
 
@@ -22,15 +24,24 @@
 
 (reg-event-db
   ::read-source
-  (fn [db _] (assoc db ::tree (read-string (::src db)))))
+  (fn [db _]
+    (let [src (::src db)]
+      (-> db
+          (assoc ::prev-src src)
+          (assoc ::tree (read-string src))))))
 
 (reg-event-db
   ::save-source
-  (fn [db [_ src]] (println src)(assoc db ::src src)))
+  (fn [db [_ src]] (assoc db ::src src)))
 
 (reg-sub
   ::tree
   (fn [db] (get db ::tree "...")))
+
+
+(reg-sub
+  ::disable-draw?
+  (fn [db] (= (::src db) (::prev-src db))))
 
 (defn code-mirror
   []
@@ -53,8 +64,12 @@
 
 (defn draw-button
   []
-  [button :label "draw"
-          :on-click #(dispatch [::read-source])])
+  (let [disable? (subscribe [::disable-draw?])]
+    (fn []
+      [button :label "draw"
+          :class "draw-button btn-primary"
+          :on-click #(dispatch [::read-source])
+          :disabled? @disable?])))
 
 (defn hiccup-tree
   [tree h-gap v-gap]
@@ -79,14 +94,19 @@
 
 (defn tree-editor
   []
+  [:div.tree-editor
+   [code-mirror]
+   [draw-button]])
+
+(defn ide
+  []
   (let [tree  (subscribe [::tree])
         h-gap (subscribe [::opt :h-gap])
         v-gap (subscribe [::opt :v-gap])]
     (fn []
       [v-box :align    :center
-             :children [[box :width "100%" :child [code-mirror]]
-                        [draw-button]
-                        (when-let [tree @tree] [box :child [hiccup-tree tree @h-gap @v-gap]])]])))
+             :children [(when-let [tree @tree] [box :child [hiccup-tree tree @h-gap @v-gap]])
+                        [box :width "100%" :child [tree-editor]]]])))
 
 (defn opt-slider
   [id]
@@ -100,15 +120,15 @@
   []
   (dispatch [::save-source callout])
   (dispatch [::read-source])
-  (fn [] [tree-editor]))
+  (fn [] [ide]))
 
 (reagent/render-component [opt-slider :v-gap] (. js/document (getElementById "v-gap")))
 (reagent/render-component [opt-slider :h-gap] (. js/document (getElementById "h-gap")))
 
 (reagent/render-component [tree-ide] (. js/document (getElementById "app")))
 
-
-
+(.colorize js/CodeMirror (array (. js/document (getElementById "usage"))) "clojure")
+;
 (defn on-js-reload []
   ;; optionally touch your app-state to force rerendering depending on
   ;; your application
