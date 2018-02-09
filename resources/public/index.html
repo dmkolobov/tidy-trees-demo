@@ -24,12 +24,11 @@
       <p>A library for making tidy drawings of trees.</p>
 
       <h2>usage</h2>
-      A single <code>reagent</code> component is made available to the user
-      via the <code>tidy-trees.reagent</code> namepsace.
 
-      <h3><code>[tidy-tree tree opts]</code></h3>
-      <h3>opts:</h3>
+      <p>This library provides a component that performs layout on the given tree in <code>O(depth * nodes)</code>
+      time.</p>
 
+      <h4><code>[tidy-trees.reagent/tidy-tree tree opts]</code></h4>
       <dl class="params row">
         <dt class="col-sm-3"><code>:branch?</code></dt>
         <dd class="col-sm-9">
@@ -59,13 +58,14 @@
         <dd class="col-sm-9">
           <b>number</b>
           <p>The minimum amount of space between levels, in pixels.</p>
-          <p id="v-gap"></p>
+          <div id="v-gap"></div>
         </dd>
 
         <dt class="col-sm-3"><code>:h-gap</code></dt>
         <dd class="col-sm-9">
           <b>number</b>
           <p>The amount of space between adjacent nodes on the same level, in pixels.</p>
+          <div id="h-gap"></div>
         </dd>
       </dl>
 

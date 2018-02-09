@@ -77,23 +77,6 @@
   (fn [db [_ id val]]
     (assoc-in db [::opt id] val)))
 
-(defn tree-controls
-  []
-  (let [h-gap (subscribe [::opt :h-gap])
-        v-gap (subscribe [::opt :v-gap])]
-    (fn []
-      [v-box :width    "100%"
-             :size     "auto"
-             :children [[label :label [:code ":h-gap"]]
-                        [slider :model     @h-gap
-                                :step      10
-                                :on-change #(dispatch [::set-opt :h-gap %])]
-                        [label :label [:code ":v-gap"]]
-                        [slider :model     @v-gap
-                                :step      10
-                                :on-change #(dispatch [::set-opt :v-gap %])]
-                        [draw-button]]])))
-
 (defn tree-editor
   []
   (let [tree  (subscribe [::tree])
@@ -101,8 +84,8 @@
         v-gap (subscribe [::opt :v-gap])]
     (fn []
       [v-box :align    :center
-             :children [[h-box :children [[box :child [code-mirror]]
-                                          [tree-controls]]]
+             :children [[box :width "100%" :child [code-mirror]]
+                        [draw-button]
                         (when-let [tree @tree] [box :child [hiccup-tree tree @h-gap @v-gap]])]])))
 
 (defn opt-slider
@@ -119,7 +102,8 @@
   (dispatch [::read-source])
   (fn [] [tree-editor]))
 
-;(reagent/render-component [opt-slider :v-gap] (. js/document (getElementById "v-gap")))
+(reagent/render-component [opt-slider :v-gap] (. js/document (getElementById "v-gap")))
+(reagent/render-component [opt-slider :h-gap] (. js/document (getElementById "h-gap")))
 
 (reagent/render-component [tree-ide] (. js/document (getElementById "app")))
 
