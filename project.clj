@@ -11,6 +11,7 @@
                  [org.clojure/core.async  "0.3.443"]
                  [reagent "0.7.0"]
                  [re-frame "0.10.3-alpha2"]
+                 [re-com "0.9.0"]
                  [tidy-trees "0.0.1"]
 
                  [cljsjs/codemirror "5.31.0-0"]]

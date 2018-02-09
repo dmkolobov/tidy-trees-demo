@@ -4,6 +4,12 @@
               [cljs.tools.reader.edn :refer [read-string]]
               [tidy-trees.reagent :refer [tidy-tree]]
 
+              [re-com.core :refer [button
+                                   slider
+                                   h-box
+                                   v-box
+                                   radio-button]]
+
               [cljsjs.codemirror]
               [cljsjs.codemirror.mode.clojure]
               [cljsjs.codemirror.addon.edit.matchbrackets]))
@@ -33,23 +39,39 @@
              mir (.fromTextArea js/CodeMirror
                                 dom
                                 (clj->js
-                                  {"value" callout
-                                   "mode"  "clojure"
-                                   "theme" "panda-syntax"
-                                   "lineNumbers" true
+                                  {"mode"         "clojure"
+                                   "theme"        "panda-syntax"
+                                   "lineNumbers"   true
                                    "matchBrackets" true}))]
          (.on mir
               "change"
               (fn [_] (dispatch [::save-source (.getValue mir)])))))
      :reagent-render
-     (fn [] [:textarea {:default-value callout
-                        :rows 2}])}))
+     (fn [] [:textarea {:default-value callout}])}))
 
-(defn hiccup-editor
+(defn draw-button
   []
-  [:div.editor
-   [:a.draw-button {:href "#" :on-click #(dispatch [::read-source])} "draw"]
-   [code-mirror]])
+  [button :label "draw"
+          :on-click #(dispatch [::read-source])])
+
+(defn hiccup-tree
+  [tree]
+  [tidy-tree tree
+   {:branch?      vector?
+    :children     rest
+    :label-branch (comp str first)
+    :label-term   str
+    :v-gap        10
+    :h-gap        20}])
+
+(defn tree-editor
+  [tree]
+  [h-box :align    :start
+         :gap      "1em"
+         :children [[code-mirror]
+                    (when tree [hiccup-tree tree])]])
+
+
 
 (defn tree-ide
   []
@@ -59,18 +81,9 @@
     (dispatch [::read-source])
 
     (fn []
-      [:div.ide
-       [hiccup-editor]
-       (when-let [tree @tree]
-         [tidy-tree tree
-          {:branch?  vector?
-           :children rest
-
-           :label-branch (comp str first)
-           :label-term   str
-
-           :v-gap    10
-           :h-gap    20}])])))
+      [:div.ide.tree-example
+       [v-box :children [[draw-button]
+                         [tree-editor @tree]]]])))
 
 (reagent/render-component [tree-ide]
                           (. js/document (getElementById "app")))
