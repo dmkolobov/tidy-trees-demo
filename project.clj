@@ -11,7 +11,9 @@
                  [org.clojure/core.async  "0.3.443"]
                  [reagent "0.7.0"]
                  [re-frame "0.10.3-alpha2"]
-                 [tidy-trees "0.0.1"]]
+                 [tidy-trees "0.0.1"]
+
+                 [cljsjs/codemirror "5.31.0-0"]]
 
   :plugins [[lein-figwheel "0.5.14"]
             [lein-cljsbuild "1.1.7" :exclusions [[org.clojure/clojure]]]]

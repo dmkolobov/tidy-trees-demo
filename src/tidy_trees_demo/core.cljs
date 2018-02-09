@@ -2,7 +2,10 @@
     (:require [reagent.core :as reagent :refer [atom]]
               [re-frame.core :refer [reg-event-db reg-sub subscribe dispatch]]
               [cljs.tools.reader.edn :refer [read-string]]
-              [tidy-trees.reagent :refer [tidy-tree]]))
+              [tidy-trees.reagent :refer [tidy-tree]]
+
+              [cljsjs.codemirror]
+              [cljsjs.codemirror.mode.clojure]))
 
 (enable-console-print!)
 
@@ -12,19 +15,36 @@
 
 (reg-event-db
   ::save-source
-  (fn [db [_ src]] (assoc db ::src src)))
+  (fn [db [_ src]] (println src)(assoc db ::src src)))
 
 (reg-sub
   ::tree
   (fn [db] (get db ::tree "...")))
 
+(defn code-mirror
+  []
+  (reagent/create-class
+    {:component-did-mount
+     (fn [owner]
+       (let [dom (reagent/dom-node owner)
+             mir (.fromTextArea js/CodeMirror
+                                dom
+                                (clj->js
+                                  {"value" "[1 [2 3 4] [5 6 7]]"
+                                   "mode"  "clojure"
+                                   "theme" "panda-syntax"
+                                   "lineNumbers" true}))]
+         (.on mir
+              "change"
+              (fn [_] (dispatch [::save-source (.getValue mir)])))))
+     :reagent-render
+     (fn [] [:textarea])}))
+
 (defn hiccup-editor
   []
   [:div.editor
    [:a.draw-button {:href "#" :on-click #(dispatch [::read-source])} "draw"]
-   [:textarea.editor-text
-    {:on-change #(dispatch [::save-source (.-value (.-target %))])}
-    "[λ t i d [y t r e e s]]"]])
+   [code-mirror]])
 
 (defn tree-ide
   []
