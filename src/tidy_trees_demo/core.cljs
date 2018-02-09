@@ -12,6 +12,8 @@
                                    v-box
                                    radio-button]]
 
+              [tidy-trees-demo.binary :as bin]
+
               [cljsjs.codemirror]
               [cljsjs.codemirror.mode.clojure]
               [cljsjs.codemirror.addon.edit.matchbrackets]
@@ -81,7 +83,7 @@
     :h-gap        h-gap
     :edge-style        edge-style}])
 
-(def def-opt {:v-gap 10 :h-gap 10 :edge-style :straight})
+(def def-opt {:v-gap 20 :h-gap 20 :edge-style :straight})
 
 (reg-sub
   ::opt
@@ -147,6 +149,46 @@
 (reagent/render-component [edge-control] (. js/document (getElementById "edge-style")))
 
 (reagent/render-component [tree-ide] (. js/document (getElementById "app")))
+
+(defn bin-seq [db] (get db ::bin-seq [5 4 3 2 1 6 7 8 9 0]))
+
+(reg-sub ::bin-seq bin-seq)
+
+
+(reg-sub
+  ::bin
+  (fn [db]
+    (reduce bin/insert nil (bin-seq db))))
+
+(reg-event-db
+  ::bin-shuffle
+  (fn [db] (assoc db ::bin-seq (shuffle (bin-seq db)))))
+
+(defn binary
+  []
+  (let [opts     (subscribe [::opts])
+        bin-seq  (subscribe [::bin-seq])
+        bin-tree (subscribe [::bin])]
+    (fn []
+      (let [{:keys [v-gap h-gap edge-style]} @opts]
+        [:div
+         [h-box :align    :center
+                :gap "1em"
+                :children [[box :child [:pre (str @bin-seq)]]
+                           [box :child [button :label "shuffle"
+                                   :class "btn-primary"
+                                   :on-click #(dispatch [::bin-shuffle])]]]]
+        [tidy-tree @bin-tree
+         {:branch?      bin/branch?
+          :children     bin/children
+          :label-branch bin/label
+          :label-term   bin/label
+          :v-gap        v-gap
+          :h-gap        h-gap
+          :edge-style        edge-style}]]))))
+
+(reagent/render-component [binary] (. js/document (getElementById "binary")))
+
 
 (.colorize js/CodeMirror (array (. js/document (getElementById "usage"))) "clojure")
 ;
