@@ -9,6 +9,8 @@
 
 (enable-console-print!)
 
+(def callout "[make your [e own trees !!!]]")
+
 (reg-event-db
   ::read-source
   (fn [db _] (assoc db ::tree (read-string (::src db)))))
@@ -30,7 +32,7 @@
              mir (.fromTextArea js/CodeMirror
                                 dom
                                 (clj->js
-                                  {"value" "[1 [2 3 4] [5 6 7]]"
+                                  {"value" callout
                                    "mode"  "clojure"
                                    "theme" "panda-syntax"
                                    "lineNumbers" true}))]
@@ -38,7 +40,7 @@
               "change"
               (fn [_] (dispatch [::save-source (.getValue mir)])))))
      :reagent-render
-     (fn [] [:textarea])}))
+     (fn [] [:textarea {:default-value callout}])}))
 
 (defn hiccup-editor
   []
@@ -49,6 +51,10 @@
 (defn tree-ide
   []
   (let [tree (subscribe [::tree])]
+
+    (dispatch [::save-source callout])
+    (dispatch [::read-source])
+
     (fn []
       [:div.ide
        [hiccup-editor]
