@@ -29,3 +29,7 @@ body, .CodeMirror, .tidy-tree {
     font-size: 1.2em;
     font-weight: 500;
 }
+
+.params dt {
+    text-align: right;
+}

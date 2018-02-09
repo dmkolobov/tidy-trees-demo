@@ -24,9 +24,52 @@
       <p>A library for making tidy drawings of trees.</p>
 
       <h2>usage</h2>
-      The <code>tidy-trees.reagent</code> namespace provides the component <code>tidy-tree</code>.
+      A single <code>reagent</code> component is made available to the user
+      via the <code>tidy-trees.reagent</code> namepsace.
 
-      <h2>try it yourself</h2>
+      <h3><code>[tidy-tree tree opts]</code></h3>
+      <h3>opts:</h3>
+
+      <dl class="params row">
+        <dt class="col-sm-3"><code>:branch?</code></dt>
+        <dd class="col-sm-9">
+          <b>function</b>
+          <p>When applied with a node, returns whether the node is a branch.</p>
+        </dd>
+
+        <dt class="col-sm-3"><code>:children?</code></dt>
+        <dd class="col-sm-9">
+          <b>function</b>
+          <p>When applied with a node, returns the nodes children as a seq.</p>
+        </dd>
+
+        <dt class="col-sm-3"><code>:label-branch</code></dt>
+        <dd class="col-sm-9">
+          <b>function</b>
+          <p>When applied with a branch node, returns a label for the branch node.</p>
+        </dd>
+
+        <dt class="col-sm-3"><code>:label-term</code></dt>
+        <dd class="col-sm-9">
+          <b>function</b>
+          <p>When applied with a terminal node, returns a label for the terminal node.</p>
+        </dd>
+
+        <dt class="col-sm-3"><code>:v-gap</code></dt>
+        <dd class="col-sm-9">
+          <b>number</b>
+          <p>The minimum amount of space between levels, in pixels.</p>
+          <p id="v-gap"></p>
+        </dd>
+
+        <dt class="col-sm-3"><code>:h-gap</code></dt>
+        <dd class="col-sm-9">
+          <b>number</b>
+          <p>The amount of space between adjacent nodes on the same level, in pixels.</p>
+        </dd>
+      </dl>
+
+      <h2>try it</h2>
       <div id="app"></div>
     </div>
 

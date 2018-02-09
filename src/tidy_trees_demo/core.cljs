@@ -64,7 +64,8 @@
     :label-branch (comp str first)
     :label-term   str
     :v-gap        v-gap
-    :h-gap        h-gap}])
+    :h-gap        h-gap
+    :edges        :straight}])
 
 (reg-sub
   ::opt
@@ -104,7 +105,13 @@
                                           [tree-controls]]]
                         (when-let [tree @tree] [box :child [hiccup-tree tree @h-gap @v-gap]])]])))
 
-
+(defn opt-slider
+  [id]
+  (let [model (subscribe [::opt id])]
+    (fn [_]
+      [slider :model     @model
+              :step      10
+              :on-change #(dispatch [::set-opt id %])])))
 
 (defn tree-ide
   []
@@ -112,8 +119,9 @@
   (dispatch [::read-source])
   (fn [] [tree-editor]))
 
-(reagent/render-component [tree-ide]
-                          (. js/document (getElementById "app")))
+;(reagent/render-component [opt-slider :v-gap] (. js/document (getElementById "v-gap")))
+
+(reagent/render-component [tree-ide] (. js/document (getElementById "app")))
 
 
 
