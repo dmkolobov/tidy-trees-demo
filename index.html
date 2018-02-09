@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.14.0/codemirror.min.css" rel="stylesheet" type="text/css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.34.0/theme/panda-syntax.min.css" rel="stylesheet" type="text/css">
+
+    <link href="https://fonts.googleapis.com/css?family=Inconsolata" rel="stylesheet">
+
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.5/css/bootstrap.css">
+    <link rel="stylesheet" href="css/material-design-iconic-font.min.css">
+    <link rel="stylesheet" href="css/re-com.css">
+
+    <link href="css/style.css" rel="stylesheet" type="text/css">
+
+    <link rel="icon" href="https://clojurescript.org/images/cljs-logo-icon-32.png">
+  </head>
+  <body>
+
+
+    <div id="site">
+      <h1>tidy-trees</h1>
+      <p>A library for making tidy drawings of trees.</p>
+
+      <h2>example</h2>
+      <p id="binary"></p>
+
+      <h2>usage</h2>
+
+      <p>Provides a reagent component for drawing arbitrary trees. The tree is traversed using the provided
+        <code>children</code> and <code>branch?</code> functions(<i>a la</i> zippers), and the nodes are spaced
+        so that they do not overlap.
+
+        The layout algorithm takes <code>O(height-of-tree * nodes)</code> time.</p>
+
+      <pre id="usage" class="cm-s-panda-syntax">
+(ns example
+  (:require [tidy-trees.reagent :refer [tidy-tree]))
+
+  ...
+
+  [tidy-tree tree opts]</pre>
+
+      <p>where <code>opts</code> contains the following entries:</p>
+
+      <dl class="params row">
+        <dt class="col-sm-3"><code>:branch?</code></dt>
+        <dd class="col-sm-9">
+          <b>function</b>
+          <p>When applied with a node, returns whether the node is a branch.</p>
+        </dd>
+
+        <dt class="col-sm-3"><code>:children?</code></dt>
+        <dd class="col-sm-9">
+          <b>function</b>
+          <p>When applied with a node, returns the nodes children as a seq.</p>
+        </dd>
+
+        <dt class="col-sm-3"><code>:label-branch</code></dt>
+        <dd class="col-sm-9">
+          <b>function</b>
+          <p>When applied with a branch node, returns a label for the branch node.</p>
+        </dd>
+
+        <dt class="col-sm-3"><code>:label-term</code></dt>
+        <dd class="col-sm-9">
+          <b>function</b>
+          <p>When applied with a terminal node, returns a label for the terminal node.</p>
+        </dd>
+
+        <dt class="col-sm-3"><code>:v-gap</code></dt>
+        <dd class="col-sm-9">
+          <b>number(px)</b>
+          <p>The minimum amount of space between levels.</p>
+          <div id="v-gap"></div>
+        </dd>
+
+        <dt class="col-sm-3"><code>:h-gap</code></dt>
+        <dd class="col-sm-9">
+          <b>number(px)</b>
+          <p>The amount of space between adjacent nodes on the same level.</p>
+          <div id="h-gap"></div>
+        </dd>
+
+        <dt class="col-sm-3"><code>:edges</code></dt>
+        <dd class="col-sm-9">
+          <b>keyword</b>
+          <p>Determines the way tree edges are draw.</p>
+          <div id="edge-style"></div>
+        </dd>
+      </dl>
+
+      <h2>try it</h2>
+      <div id="app"></div>
+    </div>
+
+    <script src="js/compiled/tidy_trees_demo.js" type="text/javascript"></script>
+  </body>
+</html>
