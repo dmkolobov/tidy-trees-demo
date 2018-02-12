@@ -4,14 +4,15 @@ body, .CodeMirror, .tidy-tree {
     font-family: 'Inconsolata', monospace;
 }
 
+pre {margin: 0;}
+
 #site {
-    width: 50rem;
+    width: 960px;
     margin: 0 auto;
     overflow: visible;
 }
 
 .CodeMirror {
-    position: absolute;
     height: auto;
     min-width: 10em;
     width: 100%;
@@ -49,4 +50,8 @@ body, .CodeMirror, .tidy-tree {
     right: 0;
     margin: 1em;
     position: absolute;
+}
+
+#usage {
+    margin-bottom: 1em;
 }

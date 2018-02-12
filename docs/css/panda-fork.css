@@ -1,0 +1,90 @@
+/*
+	Name:       Panda Syntax
+	Author:     Siamak Mokhtari (http://github.com/siamak/)
+	CodeMirror template by Siamak Mokhtari (https://github.com/siamak/atom-panda-fork)
+*/
+.cm-s-panda-fork {
+	background: #292A2B;
+	color: #E6E6E6;
+	line-height: 1.5;
+	font-family: 'Operator Mono', 'Source Sans Pro', Menlo, Monaco, Consolas, Courier New, monospace;
+}
+.cm-s-panda-fork .CodeMirror-cursor { border-color: #ff2c6d; }
+.cm-s-panda-fork .CodeMirror-activeline-background {
+	background: rgba(99, 123, 156, 0.1);
+}
+.cm-s-panda-fork .CodeMirror-selected {
+	background: #FFF;
+}
+.cm-s-panda-fork .cm-comment {
+	font-style: italic;
+	color: #676B79;
+}
+.cm-s-panda-fork .cm-operator {
+	color: #f3f3f3;
+}
+.cm-s-panda-fork .cm-string {
+	color: #19F9D8;
+}
+.cm-s-panda-fork .cm-string-2 {
+    color: #FFB86C;
+}
+
+.cm-s-panda-fork .cm-tag {
+	color: #ff2c6d;
+}
+.cm-s-panda-fork .cm-meta {
+	color: #b084eb;
+}
+
+.cm-s-panda-fork .cm-number {
+	color: #FFB86C;
+}
+.cm-s-panda-fork .cm-atom {
+	color: #ff2c6d;
+}
+.cm-s-panda-fork .cm-keyword {
+	color: #FF75B5;
+}
+.cm-s-panda-fork .cm-variable {
+	/* color: #ffb86c; */
+	color: #fff;
+}
+.cm-s-panda-fork .cm-variable-2 {
+	color: #ff9ac1;
+}
+.cm-s-panda-fork .cm-variable-3, .cm-s-panda-fork .cm-type {
+	color: #ff9ac1;
+}
+
+.cm-s-panda-fork .cm-def {
+	color: #e6e6e6;
+}
+.cm-s-panda-fork .cm-property {
+	color: #f3f3f3;
+}
+.cm-s-panda-fork .cm-unit {
+    color: #ffb86c;
+}
+
+.cm-s-panda-fork .cm-builtin {
+    color: #ffffff;
+}
+
+.cm-s-panda-fork .cm-attribute {
+    color: #ffb86c;
+}
+
+.cm-s-panda-fork .CodeMirror-matchingbracket {
+    border-bottom: 1px dotted #19F9D8;
+    padding-bottom: 2px;
+    color: #e6e6e6;
+}
+.cm-s-panda-fork .CodeMirror-gutters {
+    background: #292a2b;
+    border-right-color: rgba(255, 255, 255, 0.1);
+}
+.cm-s-panda-fork .CodeMirror-linenumber {
+    color: #e6e6e6;
+    opacity: 0.6;
+}

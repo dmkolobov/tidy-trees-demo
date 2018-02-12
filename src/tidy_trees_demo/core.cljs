@@ -13,6 +13,7 @@
                                    radio-button]]
 
               [tidy-trees-demo.binary :as bin]
+              [tidy-trees-demo.codemirror :refer [code code-editor]]
 
               [cljsjs.codemirror]
               [cljsjs.codemirror.mode.clojure]
@@ -22,7 +23,7 @@
 
 (enable-console-print!)
 
-(def callout "[parent \n [\"child\\none\" c1.x c1.y [c1.nums 1 \n                             2 \n                             3]]\n [child-2 c2.x c2.y [c2.nums 4 \n                             5 \n                             6]]]")
+(def callout "[:parent \n [:child-1 c1-x \n  \t\t   c1-y \n           [:nums 1 2 3]]\n [:child-2 c2-x \n           c2-y\n           [:nums 4 [5 55 555 5555] 6]]]")
 
 (reg-event-db
   ::read-source
@@ -54,7 +55,7 @@
                                 dom
                                 (clj->js
                                   {"mode"         "clojure"
-                                   "theme"        "panda-syntax"
+                                   "theme"        "panda-fork"
                                    "lineNumbers"   true
                                    "matchBrackets" true}))]
          (.on mir
@@ -73,17 +74,22 @@
           :disabled? @disable?])))
 
 (defn hiccup-tree
-  [tree {:keys [h-gap v-gap edge-style]}]
-  [tidy-tree tree
-   {:branch?      vector?
-    :children     rest
-    :label-branch (comp str first)
-    :label-term   str
-    :v-gap        v-gap
-    :h-gap        h-gap
-    :edge-style        edge-style}])
+  []
+  (let [tree (subscribe [::tree])
+        opts (subscribe [::opts])]
+    (fn []
+      (let [tree @tree
+            {:keys [v-gap h-gap edge-style]} @opts]
+      [tidy-tree tree
+       {:branch?      vector?
+        :children     rest
+        :label-branch (comp #(into [:div] %) str first)
+        :label-term   (comp #(into [:div] %) str)
+        :v-gap        v-gap
+        :h-gap        h-gap
+        :edge-style   edge-style}]))))
 
-(def def-opt {:v-gap 20 :h-gap 20 :edge-style :straight})
+(def def-opt {:v-gap 20 :h-gap 10 :edge-style :straight})
 
 (reg-sub
   ::opt
@@ -104,18 +110,12 @@
 
 (defn tree-editor
   []
-  [:div.tree-editor
-   [code-mirror]
-   [draw-button]])
-
-(defn ide
-  []
-  (let [tree  (subscribe [::tree])
-        opts  (subscribe [::opts])]
-    (fn []
-      [v-box :align    :center
-             :children [(when-let [tree @tree] [box :child [hiccup-tree tree @opts]])
-                        [box :width "100%" :child [tree-editor]]]])))
+  (dispatch [::save-source callout])
+  (dispatch [::read-source])
+  (fn []
+    [:div.tree-editor
+     [code-mirror]
+     [draw-button]]))
 
 (defn opt-slider
   [id]
@@ -138,60 +138,24 @@
                                       :model @model
                                       :on-change #(dispatch [::set-opt :edge-style :diagonal])]]])))
 
-(defn tree-ide
+(defn binary
   []
-  (dispatch [::save-source callout])
-  (dispatch [::read-source])
-  (fn [] [ide]))
+  (let [opts (subscribe [::opts])]
+    (fn []
+      [bin/app @opts])))
 
 (reagent/render-component [opt-slider :v-gap] (. js/document (getElementById "v-gap")))
 (reagent/render-component [opt-slider :h-gap] (. js/document (getElementById "h-gap")))
 (reagent/render-component [edge-control] (. js/document (getElementById "edge-style")))
 
-(reagent/render-component [tree-ide] (. js/document (getElementById "app")))
 
-(defn bin-seq [db] (get db ::bin-seq [5 4 3 2 1 6 7 8 9 0]))
-
-(reg-sub ::bin-seq bin-seq)
-
-
-(reg-sub
-  ::bin
-  (fn [db]
-    (reduce bin/insert nil (bin-seq db))))
-
-(reg-event-db
-  ::bin-shuffle
-  (fn [db] (assoc db ::bin-seq (shuffle (bin-seq db)))))
-
-(defn binary
-  []
-  (let [opts     (subscribe [::opts])
-        bin-seq  (subscribe [::bin-seq])
-        bin-tree (subscribe [::bin])]
-    (fn []
-      (let [{:keys [v-gap h-gap edge-style]} @opts]
-        [:div
-         [h-box :align    :center
-                :gap "1em"
-                :children [[box :child [:pre (str @bin-seq)]]
-                           [box :child [button :label "shuffle"
-                                   :class "btn-primary"
-                                   :on-click #(dispatch [::bin-shuffle])]]]]
-        [tidy-tree @bin-tree
-         {:branch?      bin/branch?
-          :children     bin/children
-          :label-branch bin/label
-          :label-term   bin/label
-          :v-gap        v-gap
-          :h-gap        h-gap
-          :edge-style        edge-style}]]))))
+(reagent/render-component [tree-editor] (. js/document (getElementById "hiccup-edit")))
+(reagent/render-component [hiccup-tree] (. js/document (getElementById "hiccup-draw")))
 
 (reagent/render-component [binary] (. js/document (getElementById "binary")))
 
+(.colorize js/CodeMirror)
 
-(.colorize js/CodeMirror (array (. js/document (getElementById "usage"))) "clojure")
-;
 (defn on-js-reload []
   ;; optionally touch your app-state to force rerendering depending on
   ;; your application

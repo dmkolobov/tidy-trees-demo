@@ -5,97 +5,152 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
 
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.14.0/codemirror.min.css" rel="stylesheet" type="text/css">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.34.0/theme/panda-syntax.min.css" rel="stylesheet" type="text/css">
-
     <link href="https://fonts.googleapis.com/css?family=Inconsolata" rel="stylesheet">
 
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.5/css/bootstrap.css">
     <link rel="stylesheet" href="css/material-design-iconic-font.min.css">
     <link rel="stylesheet" href="css/re-com.css">
 
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.14.0/codemirror.min.css" rel="stylesheet" type="text/css">
     <link href="css/style.css" rel="stylesheet" type="text/css">
+    <link href="css/panda-fork.css" rel="stylesheet" type="text/css">
 
     <link rel="icon" href="https://clojurescript.org/images/cljs-logo-icon-32.png">
   </head>
   <body>
 
 
-    <div id="site">
-      <h1>tidy-trees</h1>
-      <p>A library for making tidy drawings of trees.</p>
+      <div id="site" class="container">
+        <div class="row">
+          <div class="col">
+            <h1>tidy-trees</h1>
+            <p>A library for making tidy drawings of trees.</p>
 
-      <h2>example</h2>
-      <p id="binary"></p>
+            <p>
+              Provides a <a href="http://reagent-project.github.io/">reagent</a> component which implements a <code>O( n * depth )</code> algorithm for tree drawing inspired
+              by Reingold and Tilford's <a href="http://reingold.co/tidier-drawings.pdf">Tidier Drawings of Trees</a> and
+              Bill Mill's survey of tree drawing algorithms <a href="http://llimllib.github.io/pymag-trees/">Drawing Presentable Trees</a>.
+            </p>
 
-      <h2>usage</h2>
 
-      <p>Provides a reagent component for drawing arbitrary trees. The tree is traversed using the provided
-        <code>children</code> and <code>branch?</code> functions(<i>a la</i> zippers), and the nodes are spaced
-        so that they do not overlap.
-
-        The layout algorithm takes <code>O(height-of-tree * nodes)</code> time.</p>
-
-      <pre id="usage" class="cm-s-panda-syntax">
+            <h2>usage</h2>
+            <p>
+              If we want to draw some <code>tree</code> in an element with id <code>target-el</code>,
+              we write:
+            </p>
+            <div class="col">
+              <pre id="usage" data-lang="clojure" class="cm-s-panda-fork">
 (ns example
-  (:require [tidy-trees.reagent :refer [tidy-tree]))
+  (:require [reagent.core :refer [render-component]
+            [tidy-trees.reagent :refer [tidy-tree]))
 
   ...
 
-  [tidy-tree tree opts]</pre>
+  (render-component [tidy-tree tree opts] (. js/document (get-ElementById "#target-el"))</pre>
+            </div>
 
-      <p>where <code>opts</code> contains the following entries:</p>
+            <div class="col">
+              <p>where <code>opts</code> is a map containing the following entries:</p>
 
-      <dl class="params row">
-        <dt class="col-sm-3"><code>:branch?</code></dt>
-        <dd class="col-sm-9">
-          <b>function</b>
-          <p>When applied with a node, returns whether the node is a branch.</p>
-        </dd>
+              <dl class="params row">
+              <dt class="col-sm-3"><code>:branch?</code></dt>
+              <dd class="col-sm-9">
+                <b>function</b>
+                <p>When applied with a node, returns whether the node is a branch.</p>
+              </dd>
 
-        <dt class="col-sm-3"><code>:children?</code></dt>
-        <dd class="col-sm-9">
-          <b>function</b>
-          <p>When applied with a node, returns the nodes children as a seq.</p>
-        </dd>
+              <dt class="col-sm-3"><code>:children?</code></dt>
+              <dd class="col-sm-9">
+                <b>function</b>
+                <p>When applied with a node, returns the nodes children as a seq.</p>
+              </dd>
 
-        <dt class="col-sm-3"><code>:label-branch</code></dt>
-        <dd class="col-sm-9">
-          <b>function</b>
-          <p>When applied with a branch node, returns a label for the branch node.</p>
-        </dd>
+              <dt class="col-sm-3"><code>:label-branch</code></dt>
+              <dd class="col-sm-9">
+                <b>function</b>
+                <p>When applied with a branch node, returns a label for the branch node.</p>
+              </dd>
 
-        <dt class="col-sm-3"><code>:label-term</code></dt>
-        <dd class="col-sm-9">
-          <b>function</b>
-          <p>When applied with a terminal node, returns a label for the terminal node.</p>
-        </dd>
+              <dt class="col-sm-3"><code>:label-term</code></dt>
+              <dd class="col-sm-9">
+                <b>function</b>
+                <p>When applied with a terminal node, returns a label for the terminal node.</p>
+              </dd>
 
-        <dt class="col-sm-3"><code>:v-gap</code></dt>
-        <dd class="col-sm-9">
-          <b>number(px)</b>
-          <p>The minimum amount of space between levels.</p>
-          <div id="v-gap"></div>
-        </dd>
+              <dt class="col-sm-3"><code>:v-gap</code></dt>
+              <dd class="col-sm-9">
+                <b>number(px)</b>
+                <p>The minimum amount of space between levels.</p>
+                <div id="v-gap"></div>
+              </dd>
 
-        <dt class="col-sm-3"><code>:h-gap</code></dt>
-        <dd class="col-sm-9">
-          <b>number(px)</b>
-          <p>The amount of space between adjacent nodes on the same level.</p>
-          <div id="h-gap"></div>
-        </dd>
+              <dt class="col-sm-3"><code>:h-gap</code></dt>
+              <dd class="col-sm-9">
+                <b>number(px)</b>
+                <p>The amount of space between adjacent nodes on the same level.</p>
+                <div id="h-gap"></div>
+              </dd>
 
-        <dt class="col-sm-3"><code>:edges</code></dt>
-        <dd class="col-sm-9">
-          <b>keyword</b>
-          <p>Determines the way tree edges are draw.</p>
-          <div id="edge-style"></div>
-        </dd>
-      </dl>
+              <dt class="col-sm-3"><code>:edges</code></dt>
+              <dd class="col-sm-9">
+                <b>keyword</b>
+                <p>Determines the way tree edges are draw.</p>
+                <div id="edge-style"></div>
+              </dd>
+            </dl>
+            </div>
+          </div>
+        </div>
 
-      <h2>try it</h2>
-      <div id="app"></div>
-    </div>
+        <h3>binary search tree insertion</h3>
+        <div class="row">
+          <div class="col-md-7">
+            <p>
+              In the study of algorithms, we learn that binary search trees are an effective
+              way to implement ordered sets. Given a <b>balanced</b> binary search tree of <code>n</code>
+              elements, we can find any particular element in <code>O(log(n))</code> time.
+            </p>
+            <p>
+              The adjacent drawing illustrates such a tree. The tree contains 15 elements and when we search for
+              any element, we examine at most 4 nodes. Notice that every non-terminal node has two children,
+              and all terminals occur on the same level.
+            </p>
+            <p>
+              However, our <code>O(log(n))</code> bound does not hold for all binary search trees.
+              Binary search trees are sensitive to insertion order. The list displayed above our
+              example tree is the insertion order for the tree. Click the shuffle button to see
+              what happens to our balanced tree whenever the insertion order changes. We find that
+              perfectly balanced trees such as our first one are rare, and that the worst-case bound
+              on finding a node is actually <code>O(n)</code>.
+            </p>
+          </div>
+          <div class="col-md-5">
+            <div id="binary"></div>
+          </div>
+        </div>
+
+
+        <h3>hiccup-like trees</h3>
+        <div class="row">
+          <div class="col-md-6">
+            <p>
+              <a href="https://github.com/weavejester/hiccup">hiccup</a> is a popular Clojure format
+              for representing HTML trees where elements are vectors and maps are element attributes.
+            </p>
+            <p>
+              Below we have a simpler version of hiccup, where we omit attributes. Vectors represent non-terminal
+              nodes, whose name is the first element, and children are the remaining elements. Everything else is a terminal
+              node.
+            </p>
+
+            <p>
+              Try editing the tree below:
+            </p>
+            <div id="hiccup-edit"></div>
+          </div>
+          <div class="col-md-6" id="hiccup-draw"></div>
+        </div>
+      </div>
 
     <script src="js/compiled/tidy_trees_demo.js" type="text/javascript"></script>
   </body>
